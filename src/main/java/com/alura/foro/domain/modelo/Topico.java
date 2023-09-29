@@ -54,4 +54,25 @@ public class Topico {
 		this.curso = curso;
 		this.activo = true;
 	}
+
+	public void updateTopico(String titulo, String mensaje, StatusTopico statusTopico, Curso curso) {
+		if (titulo != null) {
+			this.titulo = titulo;
+		}
+		if (mensaje != null) {
+			this.mensaje = mensaje;
+		}
+		if(statusTopico != null) {
+			this.statusTopico = statusTopico;
+		}
+		if(curso != null) {
+			this.curso = curso;
+		}
+	}
+
+	public void deleteTopico() {
+		this.activo = false;
+	}
+
+
 }

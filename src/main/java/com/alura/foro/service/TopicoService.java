@@ -3,6 +3,7 @@ package com.alura.foro.service;
 
 import com.alura.foro.domain.dto.DataPostTopico;
 import com.alura.foro.domain.dto.DataResponseTopico;
+import com.alura.foro.domain.dto.DataUpdateTopico;
 import com.alura.foro.domain.modelo.Topico;
 import com.alura.foro.infra.errors.ValidacionDeIntegridad;
 import com.alura.foro.repository.CursoRepository;
@@ -31,7 +32,6 @@ public class TopicoService {
             throw new ValidacionDeIntegridad("este id para el curso no fue encontrado");
         }
 
-
         var author = usuarioRepository.findById(dataPostTopico.author()).get();
         var course = cursoRepository.findById(dataPostTopico.curso()).get();
         topicoRepository.existsByTituloAndMensaje(dataPostTopico.titulo(), dataPostTopico.mensaje());
@@ -46,11 +46,22 @@ public class TopicoService {
     public void getIdTopico(){
 
     }
-    public void deleteTopico(){
-
+    public void deleteTopico(Long id){
+        if (!topicoRepository.findById(id).isPresent()) {
+            throw new ValidacionDeIntegridad("El topico no se encontro en la base de datos");
+        }
+        var topic = topicoRepository.getReferenceById(id);
+        topic.deleteTopico();
     }
-    public void updateTopico(){
 
+    public DataResponseTopico updateTopico(DataUpdateTopico dataUpdateTopico){
+        if(dataUpdateTopico.curso()!=null && !usuarioRepository.existsById(dataUpdateTopico.curso())){
+            throw new ValidacionDeIntegridad("este id para el curso no fue encontrado");
+        }
+        var topico = topicoRepository.getReferenceById(dataUpdateTopico.id());
+        var curso= cursoRepository.findById(dataUpdateTopico.curso()).get();
+        topico.updateTopico(dataUpdateTopico.titulo(), dataUpdateTopico.mensaje(), dataUpdateTopico.statusTopico(), curso);
+        return new DataResponseTopico(topico);
     }
 
 
