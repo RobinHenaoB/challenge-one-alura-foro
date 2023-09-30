@@ -30,7 +30,7 @@ public class TopicoService {
     @Autowired
     private RespuestaRepository respuestaRepository;
 
-    public DataResponseTopico postTopico(DataPostTopico dataPostTopico){
+    public DataResponceTopico postTopico(DataPostTopico dataPostTopico){
 
         if(dataPostTopico.author()!=null && !usuarioRepository.existsById(dataPostTopico.author())){
             throw new ValidacionDeIntegridad("este id para el usuario no fue encontrado");
@@ -45,7 +45,7 @@ public class TopicoService {
         var topico = new Topico(dataPostTopico.titulo(), dataPostTopico.mensaje(), LocalDateTime.now(), author, course);
         topicoRepository.save(topico);
 
-        return new DataResponseTopico(topico);
+        return new DataResponceTopico(topico);
     }
     public Page<DataListTopico> getAllTopico(Pageable pageable){
         var page = topicoRepository.findByActivoTrue(pageable).map(DataListTopico::new);
@@ -105,14 +105,16 @@ public class TopicoService {
         topic.deleteTopico();
     }
 
-    public DataResponseTopico updateTopico(DataUpdateTopico dataUpdateTopico){
+    public DataResponceTopico updateTopico(DataUpdateTopico dataUpdateTopico){
         if(dataUpdateTopico.curso()!=null && !usuarioRepository.existsById(dataUpdateTopico.curso())){
             throw new ValidacionDeIntegridad("este id para el curso no fue encontrado");
         }
+        topicoRepository.existsByTituloAndMensaje(dataUpdateTopico.titulo(), dataUpdateTopico.mensaje());
+
         var topico = topicoRepository.getReferenceById(dataUpdateTopico.id());
         var curso= cursoRepository.findById(dataUpdateTopico.curso()).get();
         topico.updateTopico(dataUpdateTopico.titulo(), dataUpdateTopico.mensaje(), dataUpdateTopico.statusTopico(), curso);
-        return new DataResponseTopico(topico);
+        return new DataResponceTopico(topico);
     }
 
 }

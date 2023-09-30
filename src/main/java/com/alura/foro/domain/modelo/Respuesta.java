@@ -44,4 +44,14 @@ public class Respuesta {
 		this.solucion = true;
 		this.activo = true;
 	}
+
+	public void updateRespuesta(String mensaje) {
+		if (mensaje != null) {
+			this.mensaje = mensaje;
+		}
+	}
+
+	public void deleteRespuesta() {
+		this.activo = false;
+	}
 }
