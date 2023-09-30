@@ -1,14 +1,20 @@
 package com.alura.foro.controller;
 
 
+import com.alura.foro.domain.dto.DataListTopico;
 import com.alura.foro.domain.dto.DataPostTopico;
 import com.alura.foro.domain.dto.DataUpdateTopico;
+import com.alura.foro.repository.RespuestaRepository;
+import com.alura.foro.repository.TopicoRepository;
 import com.alura.foro.service.TopicoService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +24,10 @@ public class TopicoController {
 
     @Autowired
     private TopicoService topicoService;
+    @Autowired
+    private TopicoRepository topicRepository;
+    @Autowired
+    private RespuestaRepository responseRepository;
 
     @PostMapping
     @Transactional
@@ -30,13 +40,24 @@ public class TopicoController {
         return  ResponseEntity.ok(response);
     }
 
-
-    public void getAllTopico(){
-
+    @GetMapping
+    @Operation(
+            summary = "ver todos los topicos activos",
+            tags = {"topic", "get"}
+    )
+    public ResponseEntity<Page<DataListTopico>> getAllTopico(@PageableDefault(size = 10, sort = {"id"}) Pageable pageable){
+        var response = topicoService.getAllTopico(pageable);
+        return ResponseEntity.ok(response);
     }
 
-    public void getIdTopico(){
-
+    @GetMapping("/{id}")
+    @Operation(
+            summary = "ver un topico y sus respuestas asociadas",
+            tags = {"topic", "get"}
+    )
+    public ResponseEntity<Object> getIdTopico(@PathVariable @Min(1) Long id){
+        var respuesta = topicoService.getIdTopico(id);
+        return ResponseEntity.ok(respuesta);
     }
 
     @PutMapping

@@ -5,8 +5,16 @@ import com.alura.foro.domain.modelo.Topico;
 
 import java.time.LocalDateTime;
 
-public record DataResponseTopico(Long id, String title, String message, LocalDateTime creationDate, StatusTopico status, String author, String course) {
-    public DataResponseTopico(Topico topico) {
+public record DataListTopico(
+        Long id,
+        String titulo,
+        String mensaje,
+        LocalDateTime fechasCreacion,
+        StatusTopico statusTopico,
+        String author,
+        String curso) {
+
+    public DataListTopico(Topico topico) {
         this(topico.getId(),
                 topico.getTitulo(),
                 topico.getMensaje(),
@@ -14,8 +22,5 @@ public record DataResponseTopico(Long id, String title, String message, LocalDat
                 topico.getStatusTopico(),
                 topico.getAuthor().getNombre(),
                 topico.getCurso().getNombre());
-
     }
 }
-
-
